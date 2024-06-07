@@ -1,3 +1,5 @@
+let body = document.querySelector("body");
+let button;
 //Generate random number for random choice rock paper scissers
 getComputerChoice = () => {
   //generate random number
@@ -16,24 +18,24 @@ getComputerChoice = () => {
   }
   return result;
 };
-
+let humanChoice;
+let choices = ["Rock", "Paper", "Scicssers"];
+for (let i = 0; i < choices.length; i++) {
+  button = document.createElement("button");
+  button.textContent = choices[i];
+  button.setAttribute('id', `${choices[i]}`)
+  body.appendChild(button);
+  console.log(button)
+    button.addEventListener('click', (e) => {
+      humanChoice = e.target.id
+    console.log(humanChoice)
+    })
+}
+console.log(humanChoice)
 //Generate human select
 getHumanChoice = () => {
   let result = "";
   let correct = true;
-  let humanChoice;
-  do {
-        humanChoice = parseInt(
-          prompt(`
-          Introduce un numero:
-          1-Rock
-          2-Paper
-          3-Scissers
-          `)
-        );
-  } while (!(humanChoice >= 1  && humanChoice <= 3))
-
-
   switch (humanChoice) {
     case 1:
       result = "Rock";
@@ -44,9 +46,8 @@ getHumanChoice = () => {
     case 3:
       result = "Scissers";
   }
-  return result;
+  console.log(result)
 };
-
 playRound = (humanChoice, computerChoice) => {
   if (humanChoice == computerChoice) {
     console.log("We have been tied");
