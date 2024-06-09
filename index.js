@@ -4,18 +4,25 @@ let container = document.createElement("div");
 container.setAttribute("id", "container");
 body.appendChild(container);
 
+//Create element count Human
 let countHumanDom = document.createElement("div");
 let countHuman = 0;
-countHumanDom.textContent = `Tu ${countHuman}`;
-
 countHumanDom.setAttribute("id", "countHuman");
+countHumanDom.textContent = `Tu ${countHuman}`;
 container.appendChild(countHumanDom);
-// Función para generar una elección aleatoria para la computadora
+
+//Create element count Computer
+let countComputerDom = document.createElement("div");
+let countComputer = 0;
+countComputerDom.textContent = `Machine ${countComputer}`;
+countComputerDom.setAttribute("id", "countComputer");
+container.appendChild(countComputerDom);
+
+// function for computer choice random
 const getComputerChoice = () => {
-  // Generar número aleatorio entre 1 y 3
   let randomN = Math.floor(Math.random() * 3) + 1;
 
-  // Elección aleatoria basada en el número generado
+  // random choice about a random number between 1 and 3
   let result;
   switch (randomN) {
     case 1:
@@ -33,63 +40,85 @@ const getComputerChoice = () => {
   return result;
 };
 
-// Función para crear botones para la elección humana
+// Function for create buttons and take choice human choice
 const createButtons = () => {
   let choices = ["Rock", "Paper", "Scissers"];
   for (let i = 0; i < choices.length; i++) {
     let button = document.createElement("button");
     button.textContent = choices[i];
     button.setAttribute("id", `${choices[i]}`);
-    container.appendChild(button);
-    console.log(button);
-
     button.addEventListener("click", (e) => {
       let humanChoice = e.target.id;
       let computerChoice = getComputerChoice();
-      console.log(humanChoice);
-      console.log(computerChoice);
-      playRound(humanChoice, computerChoice);
-    });
+      playRound(humanChoice, computerChoice, countHuman);
+      });
+      
+    container.appendChild(button);
   }
 };
 
-// Función para jugar una ronda de piedra, papel o tijera
-const playRound = (humanChoice, computerChoice) => {
-  let countComputer = 0;
-
-  if (humanChoice === computerChoice) {
-    console.log("We have been tied");
-  } else if (
+const winHuman = (humanChoice, computerChoice) => {
+  if (
     (humanChoice === "Rock" && computerChoice === "Scissers") ||
     (humanChoice === "Paper" && computerChoice === "Rock") ||
     (humanChoice === "Scissers" && computerChoice === "Paper")
   ) {
-    countHuman++;
-    countHumanDom.textContent = `Tu ${countHuman}`;
+    return true;
+  }
+};
 
-    console.log(countHuman);
-    if (countHuman === 5) {
-      let win = document.createElement("div");
-      win.setAttribute("id", "win");
-      win.textContent = `Your choice is ${humanChoice} and 
+// Function reset all params and  dom
+const reset = (result, countHuman) => {
+  let reset = document.createElement("button");
+  reset.textContent = "Reset";
+  reset.addEventListener("click", (e) => {
+    countHumanDom.textContent = `Tu ${0}`;
+    countComputerDom.textContent = `Tu ${0}`;
+    countHuman === 5 ? result.remove() : result.remove();
+  });
+
+  countHuman === 5 ? result.appendChild(reset) : result.appendChild(reset);
+};
+//Funcion count win human
+const countHumanFunc = (humanChoice, computerChoice) => {
+  countHuman++;
+  countHumanDom.textContent = `Tu ${countHuman}`;
+  if (countHuman === 5) {
+    let win = document.createElement("div");
+    win.setAttribute("id", "result");
+    win.textContent = `Your choice is ${humanChoice} and 
         my choice is ${computerChoice}
         FOR THIS TIME YOU WIN
       `;
-      container.appendChild(win);
-      let reset = document.createElement("button");
-      reset.textContent = "Reset";
-      reset.addEventListener("click", (e) => {
-        countHuman = 0;
-        countHumanDom.textContent = `Tu ${0}`
-        win.remove();
-      });
-      win.appendChild(reset);
-    }
-  } else {
-    console.log(`Your choice is ${humanChoice} and 
+    container.appendChild(win);
+    reset(win, countHuman);
+  }
+};
+
+// Function count win Computer
+const countComputerFunc = (humanChoice, computerChoice) => {
+  countComputer++;
+  countComputerDom.textContent = `Machine ${countComputer}`;
+  if (countComputer === 5) {
+    let lose = document.createElement("div");
+    lose.setAttribute("id", "result");
+    lose.textContent = `Your choice is ${humanChoice} and 
       my choice is ${computerChoice}
       FOR THIS TIME YOU LOSE ^^
-    `);
+    `;
+    container.appendChild(lose);
+    reset(lose, countComputer);
+  }
+};
+
+// function for play a round 
+const playRound = (humanChoice, computerChoice) => {
+  if (humanChoice === computerChoice) {
+    console.log("We have been tied");
+  } else if (winHuman(humanChoice, computerChoice)) {
+    countHumanFunc(humanChoice, computerChoice);
+  } else {
+    countComputerFunc(humanChoice, computerChoice);
   }
 };
 
