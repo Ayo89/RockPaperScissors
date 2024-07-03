@@ -4,9 +4,6 @@ let container = document.createElement("div");
 container.setAttribute("id", "container");
 body.appendChild(container);
 
-//create papel img
-
-
 //Create element count Human
 let countHumanDom = document.createElement("div");
 let countHuman = 0;
@@ -20,6 +17,79 @@ let countComputer = 0;
 countComputerDom.textContent = `Machine ${countComputer}`;
 countComputerDom.setAttribute("id", "countComputer");
 container.appendChild(countComputerDom);
+
+//Disabled buttons
+const disabledButtons = (choices) => {
+  for (let i = 0; i < choices.length; i++) {
+    document.getElementById(`${choices[i]}`).classList.add("disabled");
+    setTimeout(() => {
+      document.getElementById(`${choices[i]}`).classList.remove("disabled");
+    }, 3000);
+  }
+};
+
+const changeDirectionImg = (image, direction) => {
+  if (direction == "right") {
+    image.style.transform = "scaleX(-1)";
+  } else {
+    image.style.transform = "scaleX(1)";
+  }
+};
+
+//animation images
+
+const animationImages = (player) => {
+  let imgs = {
+    paper: "./papel.webp",
+    rock: "./piedra.jpg",
+    scissers: "./tijera.avif",
+  };
+  let img = document.createElement("div");
+  if (player.player === "human") {
+    img.classList.add(`${player.player}`);
+  } else if (player.player === "machine") {
+    img.classList.add(`${player.player}`);
+  }
+  img.setAttribute("id", `${player.choice}`);
+  img.style.backgroundImage = `url(${imgs[player.choice]})`;
+  if (player.choice === "rock" && player.player == "human") {
+    img.style.transform = "scaleX(-1)";
+  }
+  container.appendChild(img);
+
+  if (player.choice) {
+    img.style.display = "block";
+
+    //remove img div
+    setTimeout(() => {
+      img.remove();
+    }, 3000);
+
+    let humanImg = document.getElementsByClassName("human")[0];
+    let machineImg = document.getElementsByClassName("machine")[0];
+
+    // Check if images exist before proceeding
+    if (!humanImg || !machineImg) return;
+
+    //move controls animation
+    let count = 0;
+    let imgIntervalId;
+    let leftStart = 90;
+    let rightStart = 100;
+    console.log(humanImg);
+    console.log(machineImg);
+    count = 0;
+    clearInterval(imgIntervalId); // Clear any existing interval to avoid overlap
+    imgIntervalId = setInterval(() => {
+      count += 20;
+      humanImg.style.left = `${leftStart + count}px`;
+      machineImg.style.right = `${rightStart + count}px`;
+      if (count >= 300) {
+        clearInterval(imgIntervalId);
+      }
+    }, 100);
+  }
+};
 
 // function for computer choice random
 const getComputerChoice = () => {
@@ -46,45 +116,30 @@ const getComputerChoice = () => {
 // Function for create buttons and take choice human choice
 const createButtons = () => {
   let choices = ["Rock", "Paper", "Scissers"];
-  let imgs = {
-    paper: './papel.webp',
-    rock: './piedra.jpg',
-    scissers: './tijera.avif'
-  }
+
   for (let i = 0; i < choices.length; i++) {
     let button = document.createElement("button");
     button.textContent = choices[i];
     button.setAttribute("id", `${choices[i]}`);
     button.addEventListener("click", (e) => {
       let humanChoice = e.target.id.toLowerCase();
-      let imgHumanChoice = document.createElement("div");
-      imgHumanChoice.setAttribute("id", `${humanChoice}`);
-      imgHumanChoice.style.backgroundImage = `url(${imgs[humanChoice]})`
-      if (humanChoice === 'rock') {
-        imgHumanChoice.style.transform = 'scaleX(-1)'
-      }
-      console.log(imgHumanChoice)
-      container.appendChild(imgHumanChoice);
-      console.log(humanChoice)
-      if (humanChoice) {
-        imgHumanChoice.style.display = "block";
-        imgHumanChoice.style.left = "90px";
-        button.style.pointerEvents = "none";
-        setTimeout(() => {
-          imgHumanChoice.style.display = "none";
-          button.style.pointerEvents = "auto";
-        }, 3000);
-        let countLeft = 0;
-        let imgIntervalId = setInterval(() => {
-          leftstart = 90
-          countLeft += 20;
-          imgHumanChoice.style.left = `${leftstart + countLeft}px`;
-          if (countLeft >= 300) {
-            clearInterval(imgIntervalId);
-          }
-        }, 100);
-      }
+      let human = {
+        player: "human",
+        choice: humanChoice,
+      };
+    disabledButtons(choices);
+
+      //Animation img Humanchoice
+      animationImages(human);
+      //Finish animation
       let computerChoice = getComputerChoice();
+      let machine = {
+        player: "machine",
+        choice: computerChoice,
+      };
+      //Animation computer choice
+      animationImages(machine);
+
       playRound(humanChoice, computerChoice);
       console.log(countComputer);
       console.log(countHuman);
@@ -118,6 +173,7 @@ const reset = (result) => {
 
   countHuman === 5 ? result.appendChild(reset) : result.appendChild(reset);
 };
+
 //Funcion count win human
 const countHumanFunc = (humanChoice, computerChoice) => {
   countHuman++;
