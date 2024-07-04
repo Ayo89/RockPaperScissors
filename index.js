@@ -3,6 +3,14 @@ let body = document.querySelector("body");
 let container = document.createElement("div");
 container.setAttribute("id", "container");
 body.appendChild(container);
+//wrapper
+let wrapper = document.createElement("div");
+wrapper.setAttribute("id", "wrapper");
+container.appendChild(wrapper);
+//Container buttons
+contentButtons = document.createElement("div");
+contentButtons.setAttribute("id", "contentButtons");
+container.appendChild(contentButtons);
 
 //Create element count Human
 let countHumanDom = document.createElement("div");
@@ -28,6 +36,32 @@ const disabledButtons = (choices) => {
   }
 };
 
+//function message round
+const msgRound = (msg) => {
+  let msgWin = document.createElement("div");
+  msgWin.setAttribute("id", "msg-round");
+  if (msg === "EMPATE") {
+    msgWin.style.color = "blue";
+    msgWin.textContent = "EMPATE";
+  } else {
+    let span = document.createElement("span");
+    span.textContent = msg;
+
+    msgWin.appendChild(document.createTextNode("You "));
+    msg === "Win" || msg
+      ? (span.style.color = "green")
+      : (span.style.color = "red");
+    msgWin.appendChild(span);
+
+    msgWin.appendChild(document.createTextNode(" this round"));
+  }
+  container.insertBefore(msgWin, contentButtons);
+
+  setTimeout(() => {
+    msgWin.remove();
+  }, 3000);
+};
+
 const changeDirectionImg = (image, direction) => {
   if (direction == "right") {
     image.style.transform = "scaleX(-1)";
@@ -47,8 +81,10 @@ const animationImages = (player) => {
   let img = document.createElement("div");
   if (player.player === "human") {
     img.classList.add(`${player.player}`);
+    img.style.left = "90px";
   } else if (player.player === "machine") {
     img.classList.add(`${player.player}`);
+    img.style.right = "100px";
   }
   img.setAttribute("id", `${player.choice}`);
   img.style.backgroundImage = `url(${imgs[player.choice]})`;
@@ -78,7 +114,6 @@ const animationImages = (player) => {
     let rightStart = 100;
     console.log(humanImg);
     console.log(machineImg);
-    count = 0;
     clearInterval(imgIntervalId); // Clear any existing interval to avoid overlap
     imgIntervalId = setInterval(() => {
       count += 20;
@@ -127,7 +162,7 @@ const createButtons = () => {
         player: "human",
         choice: humanChoice,
       };
-    disabledButtons(choices);
+      disabledButtons(choices);
 
       //Animation img Humanchoice
       animationImages(human);
@@ -141,11 +176,9 @@ const createButtons = () => {
       animationImages(machine);
 
       playRound(humanChoice, computerChoice);
-      console.log(countComputer);
-      console.log(countHuman);
     });
 
-    container.appendChild(button);
+    contentButtons.appendChild(button);
   }
 };
 
@@ -210,11 +243,15 @@ const countComputerFunc = (humanChoice, computerChoice) => {
 // function for play a round
 const playRound = (humanChoice, computerChoice) => {
   if (humanChoice === computerChoice) {
-    console.log("We have been tied");
+    msgRound("EMPATE");
   } else if (winHuman(humanChoice, computerChoice)) {
     countHumanFunc(humanChoice, computerChoice);
+
+    //msg win round
+    msgRound("Win");
   } else {
     countComputerFunc(humanChoice, computerChoice);
+    msgRound("Lose");
   }
 };
 
