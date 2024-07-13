@@ -48,9 +48,7 @@ const msgRound = (msg) => {
     span.textContent = msg;
 
     msgWin.appendChild(document.createTextNode("You "));
-    msg === "Win" || msg
-      ? (span.style.color = "green")
-      : (span.style.color = "red");
+    msg === "Win" ? (span.style.color = "green") : (span.style.color = "red");
     msgWin.appendChild(span);
 
     msgWin.appendChild(document.createTextNode(" this round"));
@@ -62,12 +60,39 @@ const msgRound = (msg) => {
   }, 3000);
 };
 
-const changeDirectionImg = (image, direction) => {
-  if (direction == "right") {
-    image.style.transform = "scaleX(-1)";
-  } else {
-    image.style.transform = "scaleX(1)";
-  }
+const changeDirectionImg = (image) => {
+  image.style.transform = "scaleX(-1)";
+};
+
+//Collisions
+const collisions = (imgHuman, imgMachine) => {
+  let imgHumanStyles = getComputedStyle(imgHuman);
+  let imgMachineStyles = getComputedStyle(imgMachine);
+
+  let imgHumanLeft = parseInt(imgHumanStyles.left);
+  let imgHumanRight = imgHumanLeft + parseInt(imgHumanStyles.width);
+
+  let imgMachineRight = parseInt(imgMachineStyles.right);
+  let imgMachineLeft =
+    container.offsetWidth - imgMachineRight - parseInt(imgMachineStyles.width);
+
+  return imgHumanRight >= imgMachineLeft;
+};
+
+const moveImage = (humanImage, machineImage) => {
+  let count = 0;
+  let leftStart = parseInt(container.offsetWidth / 2 / 3) - 50;
+  let rightStart = parseInt(container.offsetWidth / 2 / 3) - 50;
+  humanImage.style.left = `${leftStart}px`;
+  machineImage.style.right = `${rightStart}px`;
+  let imgIntervalId = setInterval(() => {
+    count += 20;
+    humanImage.style.left = `${leftStart + count}px`;
+    machineImage.style.right = `${rightStart + count}px`;
+    if (collisions(humanImage, machineImage)) {
+      clearInterval(imgIntervalId);
+    }
+  }, 100);
 };
 
 //animation images
@@ -81,15 +106,17 @@ const animationImages = (player) => {
   let img = document.createElement("div");
   if (player.player === "human") {
     img.classList.add(`${player.player}`);
-    img.style.left = "90px";
   } else if (player.player === "machine") {
     img.classList.add(`${player.player}`);
-    img.style.right = "100px";
   }
   img.setAttribute("id", `${player.choice}`);
   img.style.backgroundImage = `url(${imgs[player.choice]})`;
-  if (player.choice === "rock" && player.player == "human") {
-    img.style.transform = "scaleX(-1)";
+  if (
+    (player.choice === "rock" && player.player == "human") ||
+    (player.player === "machine" && player.choice === "paper") ||
+    (player.player === "machine" && player.choice === "scissers")
+  ) {
+    changeDirectionImg(img);
   }
   container.appendChild(img);
 
@@ -106,23 +133,11 @@ const animationImages = (player) => {
 
     // Check if images exist before proceeding
     if (!humanImg || !machineImg) return;
+    console.log(player.player == "human");
+    console.log(player);
 
     //move controls animation
-    let count = 0;
-    let imgIntervalId;
-    let leftStart = 90;
-    let rightStart = 100;
-    console.log(humanImg);
-    console.log(machineImg);
-    clearInterval(imgIntervalId); // Clear any existing interval to avoid overlap
-    imgIntervalId = setInterval(() => {
-      count += 20;
-      humanImg.style.left = `${leftStart + count}px`;
-      machineImg.style.right = `${rightStart + count}px`;
-      if (count >= 300) {
-        clearInterval(imgIntervalId);
-      }
-    }, 100);
+    moveImage(humanImg, machineImg);
   }
 };
 
@@ -174,7 +189,6 @@ const createButtons = () => {
       };
       //Animation computer choice
       animationImages(machine);
-
       playRound(humanChoice, computerChoice);
     });
 
@@ -254,6 +268,5 @@ const playRound = (humanChoice, computerChoice) => {
     msgRound("Lose");
   }
 };
-
 // Crear los botones al cargar la página
 createButtons();

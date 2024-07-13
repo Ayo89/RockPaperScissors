@@ -56,12 +56,12 @@ justify-content: end;
 #paper, #rock, #scissers {
   display: none;
   position: absolute;
-  width: 280px;
-  height: 350px;
+  width: 20rem;
+  height: 25rem;
   background-size: contain;
   background-repeat: no-repeat;
   z-index: -1;
-  top: 280px;
+  top: 14rem;
 }
 
 .disabled {
