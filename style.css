@@ -7,12 +7,54 @@ body {
   overflow: hidden;
 }
 
+#centerDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#startContainer {
+  width: 50vw;
+  height: 50vh;
+  background-color: bisque;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+#startContainer input {
+  border-radius: 12px;
+  width: 20rem;
+  height: 2.4rem;
+  border: 0.4rem solid black;
+}
+
+#startContainer label {
+  font-size: 2.4rem;
+}
+
+#startContainer button {
+  background-color: aqua;
+  border-radius: 12px;
+  margin-top: 4rem;
+  font-size: 4.8rem;
+  padding: 1.4rem;
+}
+
 #container {
   width: 100%;
   height: 100%;
-display: flex;
-flex-direction: column;
-justify-content: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+#header {
+  display: flex;
+  justify-content: space-between;
+  height: 6rem;
 }
 
 #result {
@@ -26,34 +68,23 @@ justify-content: end;
 }
 
 /*counts*/
-#countHuman {
-  position: absolute;
+
+#header > * {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  height: 100px;
   width: 300px;
   background-color: pink;
-  top: 0;
-  left: 0;
-  font-size: 24px;
 }
 
-#countComputer {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100px;
-  width: 300px;
-  background-color: pink;
-  top: 0;
-  right: 0;
+#header * span {
   font-size: 24px;
 }
 
 /*imgs*/
-#paper, #rock, #scissers {
+#paper,
+#rock,
+#scissers {
   display: none;
   position: absolute;
   width: 20rem;
@@ -73,7 +104,7 @@ justify-content: end;
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column
+  flex-direction: column;
 }
 
 #msg-round {
@@ -85,7 +116,7 @@ justify-content: end;
   padding: 24px;
 }
 
-#msg-round span{
+#msg-round span {
   margin: 0 10px;
   font-size: 34px;
 }
@@ -109,4 +140,28 @@ justify-content: end;
 button:hover {
   transform: scale(1.1);
   cursor: pointer;
+}
+
+#fire {
+  background-image: url(./fire-svgrepo-com.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 3rem;
+  height: 2rem;
+}
+
+.burn {
+  animation: burn 2s ease-in-out; /* Animación de 2 segundos llamada crecerYVolver */
+}
+
+@keyframes burn {
+  0% {
+    transform: scale(1); /* Escala inicial 1 (tamaño normal) */
+  }
+  50% {
+    transform: scale(2); /* Escala al 120% a la mitad de la animación */
+  }
+  100% {
+    transform: scale(1); /* Vuelve al tamaño normal al final */
+  }
 }
