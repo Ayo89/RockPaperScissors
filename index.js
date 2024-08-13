@@ -1,28 +1,26 @@
 // Start
 let userName;
 let body = document.querySelector("body");
-body.setAttribute('id', 'centerDiv')
-  let startContainer = document.createElement("div");
-  startContainer.setAttribute("id", "startContainer");
-  body.appendChild(startContainer);
-  let inputStart = document.createElement("input");
-  let labelStart = document.createElement('label');
-  let buttonStart = document.createElement('button');
-  
+body.setAttribute("id", "centerDiv");
+let startContainer = document.createElement("div");
+startContainer.setAttribute("id", "startContainer");
+body.appendChild(startContainer);
+let inputStart = document.createElement("input");
+let labelStart = document.createElement("label");
+let buttonStart = document.createElement("button");
 
-  labelStart.textContent = "Write your name: ";
-  buttonStart.textContent = 'PLAY'
-  startContainer.appendChild(labelStart)
-  startContainer.appendChild(inputStart)
-  startContainer.appendChild(buttonStart)
+labelStart.textContent = "Write your name: ";
+buttonStart.textContent = "PLAY";
+startContainer.appendChild(labelStart);
+startContainer.appendChild(inputStart);
+startContainer.appendChild(buttonStart);
 inputStart.addEventListener("input", (e) => {
   userName = e.target.value;
   userName = userName.toUpperCase();
-})
-
+});
 
 //START
-buttonStart.addEventListener('click', (e) => {
+buttonStart.addEventListener("click", (e) => {
   if (userName && userName.trim() !== "") {
     body.removeAttribute("id", "centerDiv");
     startContainer.remove();
@@ -118,6 +116,19 @@ buttonStart.addEventListener('click', (e) => {
 
       setTimeout(() => {
         msgWin.remove();
+      }, 3000);
+    };
+
+    const msgResult = (humanChoice, computerChoice, result) => {
+      setTimeout(() => {
+        let win = document.createElement("div");
+        win.setAttribute("id", "result");
+        win.textContent = `${userName} CHOICE  ${humanChoice} AND 
+            MACHINE ${computerChoice}
+            FOR THIS TIME YOU ${result}
+          `;
+        container.appendChild(win);
+        reset(win);
       }, 3000);
     };
 
@@ -269,12 +280,12 @@ buttonStart.addEventListener('click', (e) => {
     // Function reset all params and  dom
     const reset = (result) => {
       let reset = document.createElement("button");
-      reset.textContent = "Reset";
-      reset.addEventListener("click", (e) => {
+      reset.textContent = "PLAY AGAIN";
+      reset.addEventListener("click", () => {
         countHuman = 0;
         countComputer = 0;
         countHumanDom.textContent = `${userName} ${0}`;
-        countComputerDom.textContent = `${userName} ${0}`;
+        countComputerDom.textContent = `MACHINE ${0}`;
         countHuman === 5 ? result.remove() : result.remove();
       });
 
@@ -282,57 +293,44 @@ buttonStart.addEventListener('click', (e) => {
     };
 
     //Funcion count win human
-    const countHumanFunc = (humanChoice, computerChoice) => {
-      countHuman++;
-      burn(fire1);
+    const countFunc = (humanChoice, computerChoice, result) => {
+      if (result === 'human') {
+        countHuman++;
+        burn(fire1);
+      }else {
+        countComputer++;
+        burn(fireClone);
+        
+      }
       countHumanDom.textContent = `${userName} ${countHuman}`;
+      countComputerDom.textContent = `MACHINE ${countComputer}`;
       if (countHuman === 5) {
-        let win = document.createElement("div");
-        win.setAttribute("id", "result");
-        win.textContent = `Your choice is ${humanChoice} and 
-        my choice is ${computerChoice}
-        FOR THIS TIME YOU WIN
-      `;
-        container.appendChild(win);
-        reset(win);
+        msgResult(humanChoice, computerChoice, "WIN");
+      }
+      else if (countComputer === 5){
+        msgResult(humanChoice, computerChoice, "LOSE");
       }
     };
 
     // Function count win Computer
-    const countComputerFunc = (humanChoice, computerChoice) => {
-      countComputer++;
-      burn(fireClone);
-      countComputerDom.textContent = `MACHINE ${countComputer}`;
-      if (countComputer === 5) {
-        let lose = document.createElement("div");
-        lose.setAttribute("id", "result");
-        lose.textContent = `Your choice is ${humanChoice} and 
-    my choice is ${computerChoice}
-    FOR THIS TIME YOU LOSE ^^
-    `;
-        container.appendChild(lose);
 
-        reset(lose);
-      }
-    };
 
     // function for play a round
     const playRound = (humanChoice, computerChoice) => {
       if (humanChoice === computerChoice) {
         msgRound("EMPATE");
       } else if (winHuman(humanChoice, computerChoice)) {
-        countHumanFunc(humanChoice, computerChoice);
-
+        countFunc(humanChoice, computerChoice, 'human');
         //msg win round
         msgRound("Win");
       } else {
-        countComputerFunc(humanChoice, computerChoice);
+        countFunc(humanChoice, computerChoice, 'machine');
         msgRound("Lose");
       }
     };
     // Crear los botones al cargar la página
     createButtons();
   }
-})
+});
 
 //Start the game
